@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打靶游戏</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+        body {
+            display: flex;
+            flex-direction:column;
+            justify-content: center;
+            align-items: center;
+            font-size: 25px;
+            gap: 1em;
+        }
+        .score {
+            color: green;
+        }
+        .ball {
+            border-radius: 50%;
+        }
+        .five {
+            width: 1.2em;
+            height: 1.2em;
+            background-color: #666666;
+        }
+        .three {
+            padding: 1.2em;
+            background-color: #999999;
+        }
+        .one {
+            padding: 1.2em;
+            background-color: #bbbbbb;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <h2 class="totalScore">总共得分：0</h2>
+    <h2 class="score" hidden>击中0分</h2>
+    <div class="one ball">
+        <div class="three ball">
+            <div class="five ball"></div>
+        </div>
+    </div>
+    <script>
+        const one = document.querySelector(".one")
+        const three = document.querySelector(".three")
+        const five = document.querySelector(".five")
+        const totalScore = document.querySelector(".totalScore")
+        const score = document.querySelector(".score")
+        let finalScore = 0
+        let showTarget = true
+        let timerID = null
+        let targetWidth = null 
+        let targetHeight = null
+        function shoot(goal) {
+            return function (event) {
+                        finalScore += goal
+                        totalScore.innerText = `总共得分：${finalScore}`
+                        score.innerText = `击中${goal}分`
+                        one.hidden = true
+                        score.hidden = false
+                        clearInterval(timerID)
+                        timerID = run()
+                        event.stopPropagation()
+                    }
+        }
+        one.addEventListener("click", shoot(1))
+        three.addEventListener("click", shoot(3))
+        five.addEventListener("click", shoot(5))
+        function run() {
+            return setInterval(() => {
+                        one.style.left = `${Math.random() * (document.documentElement.clientWidth -targetWidth)}px`
+                        one.style.top = `${Math.random() * (document.documentElement.clientHeight -targetHeight)}px`
+                        one.hidden = false
+                        score.hidden = true
+                    }, 1000);
+        }
+        window.addEventListener("load", () => {
+            targetWidth = one.clientWidth
+            targetHeight = one.clientHeight
+            timerID = run()
+        })
+    </script>
+</body>
+</html>
